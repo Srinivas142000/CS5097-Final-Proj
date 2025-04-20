@@ -1,6 +1,10 @@
 using UnityEngine;
 using UnityEngine.InputSystem; // Required for input handling
 
+// This is script for spawning the origin and second point objects in the scene
+// Script didn't work as expected
+// It hangs the item loader
+
 public class ShowmyObject : MonoBehaviour
 {
     public GameObject originPrefab; // Assign sphere prefab for origin point

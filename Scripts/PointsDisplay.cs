@@ -1,6 +1,8 @@
 using UnityEngine;
 using TMPro;
 
+// This is for inscreen debugging of the position of the object in 3D space. It will display the X, Y, and Z coordinates of the object in a TextMeshProUGUI component. The text will always face the OVR camera rig to ensure visibility in VR.
+
 public class PointsDisplay : MonoBehaviour
 {
     public TextMeshProUGUI positionText; // Assign this in the Inspector

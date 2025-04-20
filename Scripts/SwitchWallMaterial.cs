@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using TMPro;
 
+
+// Change materials using a dropdown menu.
 public class SwitchWallMaterial : MonoBehaviour
 {
     public Material[] availableMaterials; // Array to store loaded materials
@@ -25,7 +27,6 @@ public class SwitchWallMaterial : MonoBehaviour
         }
     }
 
-    // ✅ Load all materials from the specified folder inside Resources
     void LoadMaterialsFromFolder(string folderName)
     {
         availableMaterials = Resources.LoadAll<Material>(folderName);
@@ -40,7 +41,6 @@ public class SwitchWallMaterial : MonoBehaviour
         }
     }
 
-    // ✅ Populate the dropdown with material names
     void PopulateDropdown()
     {
         materialDropdown.ClearOptions(); // Clear any existing options
@@ -54,7 +54,6 @@ public class SwitchWallMaterial : MonoBehaviour
         materialDropdown.RefreshShownValue(); // Update the dropdown display
     }
 
-    // ✅ Handle material selection from the dropdown
     // Handle material selection from the dropdown
     public void OnMaterialSelected(int index)
     {

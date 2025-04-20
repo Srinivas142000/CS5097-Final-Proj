@@ -7,12 +7,13 @@ public class MenuController : MonoBehaviour
 
     private void Update()
     {
-        // Check for A or X button press
+        // Check for A or X button press fo opening menu
         if (OVRInput.GetDown(OVRInput.Button.One) || OVRInput.GetDown(OVRInput.Button.Three))
         {
             ToggleMenu();
         }
 
+        // Check Y button for creating normal wall
         if (OVRInput.GetDown(OVRInput.Button.Four))
         {
             wc.CreateWall();

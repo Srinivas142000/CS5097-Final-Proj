@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+// ToggleCanvas script to manage the visibility of two canvases in Unity.
+
 public class ToggleCanvas : MonoBehaviour
 {
     public GameObject instructionsCanvas; // Assign in Inspector

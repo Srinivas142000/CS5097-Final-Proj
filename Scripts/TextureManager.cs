@@ -2,6 +2,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 
+// / This script manages the loading and application of textures to walls in Unity
+
 public class TextureManager : MonoBehaviour
 {
     public GameObject buttonPrefab;        // Button prefab with an Image component

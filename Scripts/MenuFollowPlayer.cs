@@ -1,6 +1,12 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+// This script manages multiple canvases in a 3D space, positioning them relative to the camera and allowing toggling between them.
+// It is designed to be used in a Unity project where the camera follows a player character, and the canvases are UI elements that should follow the camera's position and orientation.
+// The primary canvas is always positioned at a fixed distance in front of the camera, while secondary canvases can be toggled on and off and are positioned closer to the player.
+// The script also handles the rotation of the canvases to always face the camera, ensuring a consistent user experience.
+
+
 public class MenuFollowPlayer : MonoBehaviour
 {
     public List<GameObject> canvases; // List of canvases

@@ -5,23 +5,29 @@ using System.Collections.Generic;
 
 public class ItemLoader : MonoBehaviour
 {
+    // Generate materials in editor and assign them to the prefab folder in Resource
     [Header("UI")]
     public GameObject buttonPrefab;
     public Transform buttonParent;
 
+    // Pull in materials from Resources/Items
     [Header("Prefabs")]
     public string prefabFolder = "Items";
     public GameObject buildingBlockTemplatePrefab;
 
+    // The distance at which we want the objects to spawn
     [Header("Spawn Settings")]
     public float spawnOffset = 2.0f;
 
     private GameObject selectedPrefab;
     private WallCreator wallCreator;
+
+    // Create a dictionary of prefabs and their sprite to avoid duplication
     private Dictionary<GameObject, Sprite> prefabSpriteCache = new Dictionary<GameObject, Sprite>();
 
     void Start()
     {
+        // Load all materials from Resources/Items
         GameObject[] prefabs = Resources.LoadAll<GameObject>(prefabFolder);
 
         if (prefabs.Length == 0)
@@ -30,13 +36,13 @@ public class ItemLoader : MonoBehaviour
             return;
         }
 
-        // Cache WallCreator
+        // Find WallCreator Object during runtime
         wallCreator = FindObjectOfType<WallCreator>();
         if (wallCreator == null)
         {
             Debug.LogWarning("WallCreator not found in the scene. Scaling will default to 1.");
         }
-
+        // Apply prefabs to button prefab
         foreach (GameObject prefab in prefabs)
         {
             CreatePrefabButton(prefab);
@@ -45,6 +51,7 @@ public class ItemLoader : MonoBehaviour
 
     void CreatePrefabButton(GameObject prefab)
     {
+        // Instantiate the button prefab and set its parent
         GameObject newButton = Instantiate(buttonPrefab, buttonParent);
 
         TextMeshProUGUI buttonText = newButton.GetComponentInChildren<TextMeshProUGUI>();
@@ -68,17 +75,6 @@ public class ItemLoader : MonoBehaviour
     {
         if (prefabSpriteCache.ContainsKey(prefab))
             return prefabSpriteCache[prefab];
-
-#if UNITY_EDITOR
-        Texture2D previewTexture = UnityEditor.AssetPreview.GetAssetPreview(prefab);
-        if (previewTexture != null)
-        {
-            Sprite sprite = Sprite.Create(previewTexture, new Rect(0, 0, previewTexture.width, previewTexture.height), Vector2.one * 0.5f);
-            prefabSpriteCache[prefab] = sprite;
-            return sprite;
-        }
-#endif
-
         return null;
     }
 
@@ -90,6 +86,8 @@ public class ItemLoader : MonoBehaviour
             SpawnPrefabWithVisualSwap();
         }
     }
+
+    // After selecting the prefab we need to assign the meta building blocks to the prefab
 
     void SpawnPrefabWithVisualSwap()
     {

@@ -3,22 +3,21 @@ using TMPro;
 
 public class DropdownHandler : MonoBehaviour
 {
-    public TMP_Dropdown optionDropdown; // Reference to the Dropdown
-    public TMP_Text selectedOptionText; // Reference to the Text to display the option
+    public TMP_Dropdown optionDropdown; // Dropdown
+    public TMP_Text selectedOption; // Text for Dropdown
 
-    // Start is called before the first frame update
     void Start()
     {
-        // Add listener to call the method when Dropdown value is changed
+        // TO identify changes in dropdown
         optionDropdown.onValueChanged.AddListener(OnDropdownValueChanged);
 
         // Initialize with default value
-        selectedOptionText.text = "Selected: " + optionDropdown.options[optionDropdown.value].text;
+        selectedOption.text = "Selected: " + optionDropdown.options[optionDropdown.value].text;
     }
 
     // Method to update text when Dropdown value changes
     void OnDropdownValueChanged(int value)
     {
-        selectedOptionText.text = "Selected: " + optionDropdown.options[value].text;
+        selectedOption.text = "Selected: " + optionDropdown.options[value].text;
     }
 }

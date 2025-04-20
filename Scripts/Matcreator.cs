@@ -2,6 +2,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro; // Required for TextMeshPro
 
+// THis script is no longer needed since we are using the DynamicMaterialSelector.cs script to load in materials and assign them to buttons
+
 public class Matcreator : MonoBehaviour
 {
     public GameObject targetObject;

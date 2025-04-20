@@ -1,5 +1,7 @@
 using UnityEngine;
 
+// Script no longer being used can be sxrapped
+
 public class ToggleCanvases : MonoBehaviour
 {
     public GameObject canvas1; // Assign in Inspector

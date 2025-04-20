@@ -1,12 +1,12 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using System.Linq; // Required for LINQ queries
+using System.Linq;
 
 public class MatcreatorGenWall : MonoBehaviour
 {
     public WallCreator wallCreator; // Reference to the WallCreator script
-    public CustomWallMaker customWallMaker; // Reference to the CustomWallMaker script (if needed)
+    public CustomWallMaker customWallMaker; // Reference to the CustomWallMaker script
     public GameObject buttonPrefab;
     public Transform buttonParent;
     public string materialsFolder = "WallMaterials";
@@ -23,6 +23,7 @@ public class MatcreatorGenWall : MonoBehaviour
                 return;
             }
         }
+        // Find the CustomWallCreator script in the scene if not assigned
         if (customWallMaker == null)
         {
             customWallMaker = FindObjectOfType<CustomWallMaker>();
@@ -33,6 +34,8 @@ public class MatcreatorGenWall : MonoBehaviour
             }
         }
 
+        // Load all materials from Resources/WallMaterials
+
         Material[] materials = Resources.LoadAll<Material>(materialsFolder);
 
         if (materials.Length == 0)
@@ -41,6 +44,7 @@ public class MatcreatorGenWall : MonoBehaviour
             return;
         }
 
+        // Create buttons for each material
         foreach (Material mat in materials)
         {
             CreateButtonForMaterial(mat);

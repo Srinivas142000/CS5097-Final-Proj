@@ -1,5 +1,6 @@
 using UnityEngine;
 
+// Script not needed anymore so scrapping it
 public class SwitchCanvas : MonoBehaviour
 {
     public GameObject currentCanvas; // Assign current canvas in Inspector

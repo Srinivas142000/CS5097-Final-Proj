@@ -50,7 +50,7 @@ public class ResetWall : MonoBehaviour
         }
     }
 
-    // Example usage: Call this method when a button is clicked or an event triggers
+    // Call this method when a button is clicked or an event triggers
     public void OnResetButtonClicked()
     {
         ResetWallToDefault();

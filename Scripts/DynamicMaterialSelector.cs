@@ -4,11 +4,11 @@ using System.Collections.Generic;
 
 public class DynamicMaterialSelector : MonoBehaviour
 {
-    public GameObject targetObject; // Assign your target object in Inspector
-    public GameObject buttonPrefab; // Create a UI Button prefab with Image component
-    public Transform buttonParent; // Assign your panel's content area
+    public GameObject targetObject; // Assigning the wall object here due to wall being generarted in the WallCreator script at runtime
+    public GameObject buttonPrefab; // UI button with Image component for showing what kind of material will be applied on the wall
+    public Transform buttonParent; // Panel content should be referenced since we are pulling in materials dynamically and assigning them to buttons
 
-    private List<Material> materials = new List<Material>();
+    private List<Material> materials = new List<Material>(); // Initialize a list of materials for pulling them in from Resources
 
     void Start()
     {
@@ -16,7 +16,7 @@ public class DynamicMaterialSelector : MonoBehaviour
         Material[] loadedMaterials = Resources.LoadAll<Material>("WallMaterials");
         materials.AddRange(loadedMaterials);
 
-        // Create buttons dynamically
+        // Assign them to button prefab
         foreach (Material mat in materials)
         {
             GameObject newButton = Instantiate(buttonPrefab, buttonParent);
@@ -29,11 +29,13 @@ public class DynamicMaterialSelector : MonoBehaviour
                     new Rect(0, 0, tex.width, tex.height), Vector2.one * 0.5f);
             }
 
-            // Add click handler with material parameter
+            // Handles click liostender for changing the material upon button click
             newButton.GetComponent<Button>().onClick.AddListener(() =>
                 ChangeMaterial(mat));
         }
     }
+
+    // Changes material of the wall object to selected material
 
     void ChangeMaterial(Material newMaterial)
     {
