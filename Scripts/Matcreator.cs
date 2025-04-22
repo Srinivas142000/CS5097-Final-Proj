@@ -1,81 +1,52 @@
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro; // Required for TextMeshPro
-
-// THis script is no longer needed since we are using the DynamicMaterialSelector.cs script to load in materials and assign them to buttons
+using TMPro;
 
 public class Matcreator : MonoBehaviour
 {
-    public GameObject targetObject;
-    public GameObject buttonPrefab;
+    public GameObject targetObject, buttonPrefab;
     public Transform buttonParent;
     public string materialsFolder = "WallMaterialsDum";
 
     void Start()
     {
-        Material[] materials = Resources.LoadAll<Material>(materialsFolder);
+        var materials = Resources.LoadAll<Material>(materialsFolder);
 
         if (materials.Length == 0)
         {
-            Debug.LogError($"No materials found in Resources/{materialsFolder}. Please check your folder structure and file types.");
+            Debug.LogError($"No materials found in Resources/{materialsFolder}");
             return;
         }
 
-        foreach (Material mat in materials)
-        {
-            CreateButtonForMaterial(mat);
-        }
+        foreach (var mat in materials)
+            CreateButton(mat);
     }
 
-    void CreateButtonForMaterial(Material material)
+    void CreateButton(Material mat)
     {
-        GameObject newButton = Instantiate(buttonPrefab, buttonParent);
+        var btn = Instantiate(buttonPrefab, buttonParent);
 
-        // Set button text to the material name
-        TextMeshProUGUI buttonText = newButton.GetComponentInChildren<TextMeshProUGUI>(); // Find TextMeshPro component
-        if (buttonText != null)
+        var label = btn.GetComponentInChildren<TextMeshProUGUI>();
+        if (label) label.text = mat.name;
+
+        var img = btn.GetComponent<Image>();
+        if (mat.mainTexture is Texture2D tex)
         {
-            buttonText.text = material.name;
-        }
-        else
-        {
-            Debug.LogWarning($"TextMeshProUGUI component not found on button prefab. Ensure it exists as a child.");
+            img.sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), Vector2.one * 0.5f);
         }
 
-        // Set button image to display material texture
-        Image buttonImage = newButton.GetComponent<Image>();
-        if (material.mainTexture != null)
-        {
-            Texture2D texture = material.mainTexture as Texture2D;
-            if (texture != null)
-            {
-                buttonImage.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.one * 0.5f);
-            }
-        }
-        else
-        {
-            Debug.LogWarning($"Material '{material.name}' does not have a main texture.");
-        }
-
-        // Add click event listener
-        Button buttonComponent = newButton.GetComponent<Button>();
-        buttonComponent.onClick.AddListener(() => ChangeMaterial(material));
+        btn.GetComponent<Button>().onClick.AddListener(() => ApplyMaterial(mat));
     }
 
-    void ChangeMaterial(Material newMaterial)
+    void ApplyMaterial(Material mat)
     {
-        if (targetObject != null)
+        if (!targetObject) return;
+
+        var renderer = targetObject.GetComponent<Renderer>();
+        if (renderer)
         {
-            Renderer renderer = targetObject.GetComponent<Renderer>();
-            if (renderer != null)
-            {
-                renderer.material = newMaterial;
-                Debug.Log($"Changed material of {targetObject.name} to {newMaterial.name}");
-            }
-            else
-            {
-                Debug.LogError("Target object does not have a Renderer component.");
-            }
+            renderer.material = mat;
+            Debug.Log($"Material set to {mat.name} on {targetObject.name}");
         }
     }
 }

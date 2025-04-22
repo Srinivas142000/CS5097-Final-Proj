@@ -79,3 +79,82 @@ public class SwitchWallMaterial : MonoBehaviour
 
 
 }
+
+
+using UnityEngine;
+using TMPro;
+
+// Dropdown to change the wall material
+public class SwitchWallMaterial : MonoBehaviour
+{
+    public Material[] availableMaterials;
+    public string materialsFolder = "WallMaterials"; // Folder name inside Resources
+    public TMP_Dropdown materialDropdown;
+    public WallCreator wallCreator;
+
+    void Start()
+    {
+        // Load all materials from the specified folder in Resources
+        LoadMaterialsFromFolder(materialsFolder);
+
+        if (materialDropdown != null)
+        {
+            PopulateDropdown();
+            materialDropdown.onValueChanged.AddListener(OnMaterialSelected);
+        }
+        else
+        {
+            Debug.LogWarning("Dropdown not hooked up — check inspector!");
+        }
+    }
+
+    void LoadMaterialsFromFolder(string folder)
+    {
+        availableMaterials = Resources.LoadAll<Material>(folder);
+
+        if (availableMaterials == null || availableMaterials.Length == 0)
+        {
+            Debug.LogWarning($"No materials found in Resources/{folder} — folder?");
+        }
+        else
+        {
+            Debug.Log($"Loaded {availableMaterials.Length} material(s) from Resources/{folder}");
+        }
+    }
+
+    void PopulateDropdown()
+    {
+        materialDropdown.ClearOptions();
+
+        var materialNames = new System.Collections.Generic.List<string>();
+        foreach (var mat in availableMaterials)
+        {
+            materialNames.Add(mat.name);
+        }
+
+        materialDropdown.AddOptions(materialNames);
+        materialDropdown.RefreshShownValue();
+    }
+
+    // material selection from the dropdown
+    void OnMaterialSelected(int index)
+    {
+        if (index < 0 || index >= availableMaterials.Length)
+        {
+            Debug.LogError($"Material index out of bounds: {index}");
+            return;
+        }
+
+        var selectedMat = availableMaterials[index];
+        Debug.Log($"Applying material: {selectedMat.name}");
+
+        if (wallCreator != null)
+        {
+            wallCreator.ApplyMaterial(selectedMat);
+        }
+        else
+        {
+            Debug.LogWarning("WallCreator not set. Can't apply material.");
+        }
+    }
+}

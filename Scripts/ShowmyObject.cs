@@ -1,43 +1,39 @@
 using UnityEngine;
-using UnityEngine.InputSystem; // Required for input handling
+using UnityEngine.InputSystem;
 
-// This is script for spawning the origin and second point objects in the scene
-// Script didn't work as expected
-// It hangs the item loader
+// spawns two points in front of the user using Y - origin and B - top right buttons
+// ended up freezing the item loader - keeping for now in case we fix it
 
 public class ShowmyObject : MonoBehaviour
 {
-    public GameObject originPrefab; // Assign sphere prefab for origin point
-    public GameObject secondPrefab; // Assign sphere prefab for second point
-    public Transform player; // Reference to the player's head/camera (OVRCameraRig or XR Rig)
-    public float customHeight;
+    public GameObject originPrefab, secondPrefab;
+    public Transform player; // should be the camera/head reference
+    public float customHeight = 1.5f;
 
-    private float spawnDistance = 2.0f; // Distance from the user to spawn objects
+    float spawnDistance = 2f;
 
     void Update()
     {
-        // Check if the Y button (Left Controller) is pressed
-        if (OVRInput.GetDown(OVRInput.Button.Four)) // Y button
+        // press Y (left controller) to spawn origin point
+        if (OVRInput.GetDown(OVRInput.Button.Four))
         {
-            SpawnObject(originPrefab);
+            Spawn(originPrefab);
         }
 
-        // Check if the B button (Right Controller) is pressed
-        if (OVRInput.GetDown(OVRInput.Button.Two)) // B button
+        // press B (right controller) to spawn second point
+        if (OVRInput.GetDown(OVRInput.Button.Two))
         {
-            SpawnObject(secondPrefab);
+            Spawn(secondPrefab);
         }
     }
 
-    void SpawnObject(GameObject prefab)
+    void Spawn(GameObject prefab)
     {
         if (prefab == null || player == null) return;
 
-        // Calculate spawn position in front of the player but slightly offset
-        Vector3 spawnPosition = player.position + (player.forward * spawnDistance);
-        spawnPosition.y = player.position.y + customHeight; // Keep it at user height
+        var pos = player.position + player.forward * spawnDistance;
+        pos.y = player.position.y + customHeight;
 
-        // Instantiate the object at calculated position
-        Instantiate(prefab, spawnPosition, Quaternion.identity);
+        Instantiate(prefab, pos, Quaternion.identity);
     }
 }

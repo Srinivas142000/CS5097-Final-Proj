@@ -1,90 +1,87 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-// This script manages multiple canvases in a 3D space, positioning them relative to the camera and allowing toggling between them.
-// It is designed to be used in a Unity project where the camera follows a player character, and the canvases are UI elements that should follow the camera's position and orientation.
-// The primary canvas is always positioned at a fixed distance in front of the camera, while secondary canvases can be toggled on and off and are positioned closer to the player.
-// The script also handles the rotation of the canvases to always face the camera, ensuring a consistent user experience.
-
+// handles floating menu UIs that follow the player/camera
+// first canvas is always shown, others can be toggled
+// might remove this as well, since menu following user made people dizzy
 
 public class MenuFollowPlayer : MonoBehaviour
 {
-    public List<GameObject> canvases; // List of canvases
-    public float distanceToPlayer = 4.0f; // Distance from the player for the primary canvas
-    public float spacing = 1.0f; // Spacing between canvases
-    private Transform cameraTransform;
-    private int activeCanvasIndex = -1; // -1 means no secondary canvas is active
+    public List<GameObject> canvases;
+    public float distanceToPlayer = 4f;
+    public float spacing = 1f;
 
-    private void Start()
+    Transform cam;
+    int activeIdx = -1;
+
+    void Start()
     {
-        cameraTransform = Camera.main.transform;
+        cam = Camera.main.transform;
         SetupCanvases();
     }
 
-    private void SetupCanvases()
+    void SetupCanvases()
     {
         if (canvases == null || canvases.Count == 0) return;
 
         for (int i = 0; i < canvases.Count; i++)
         {
-            if (canvases[i] != null)
-            {
-                canvases[i].SetActive(i == 0); // Only canvas 0 is active initially
-                PositionCanvas(canvases[i], i);
-            }
+            if (canvases[i] == null) continue;
+
+            // only show the main menu canvas initially
+            canvases[i].SetActive(i == 0);
+            PositionCanvas(canvases[i], i);
         }
     }
-    private void PositionCanvas(GameObject canvas, int index)
+
+    void PositionCanvas(GameObject canvas, int idx)
     {
         Vector3 offset;
 
-        if (index == 0)
+        if (idx == 0)
         {
-            // Menu canvas always at a fixed distance in front
-            offset = cameraTransform.forward * distanceToPlayer;
+            offset = cam.forward * distanceToPlayer;
         }
         else
         {
-            // Secondary canvas appears closer to the player
-            float closerDistance = distanceToPlayer - 1.5f;
-            float leftOffset = 3f; // Adjust this to move more/less to the left
-
-            offset = cameraTransform.forward * closerDistance - cameraTransform.right * leftOffset;
-
+            var closeDist = distanceToPlayer - 1.5f;
+            var left = 3f;
+            offset = cam.forward * closeDist - cam.right * left;
         }
 
-        Vector3 targetPosition = cameraTransform.position + offset;
-        canvas.transform.position = targetPosition;
-        canvas.transform.rotation = Quaternion.LookRotation(canvas.transform.position - cameraTransform.position);
+        Vector3 targetPos = cam.position + offset;
+        canvas.transform.position = targetPos;
+        canvas.transform.rotation = Quaternion.LookRotation(canvas.transform.position - cam.position);
     }
 
-    public void ToggleCanvas(int index)
+    public void ToggleCanvas(int idx)
     {
-        if (index <= 0 || index >= canvases.Count)
+        if (idx <= 0 || idx >= canvases.Count)
         {
-            Debug.LogError($"Invalid canvas index {index}. Only indices 1 to N are toggleable.");
+            Debug.LogError($"Invalid canvas index {idx} – only 1 and up are toggleable.");
             return;
         }
 
-        if (canvases[index] == null) return;
+        var canvas = canvases[idx];
+        if (canvas == null) return;
 
-        // Deactivate previously active canvas (other than canvas 0)
-        if (activeCanvasIndex != -1 && activeCanvasIndex != index && canvases[activeCanvasIndex] != null)
+        // turn off previous if any
+        if (activeIdx != -1 && activeIdx != idx && canvases[activeIdx] != null)
         {
-            canvases[activeCanvasIndex].SetActive(false);
+            canvases[activeIdx].SetActive(false);
         }
 
-        // Toggle off if the same canvas is clicked again
-        if (activeCanvasIndex == index)
+        // same one clicked again → turn off
+        if (activeIdx == idx)
         {
-            canvases[index].SetActive(false);
-            activeCanvasIndex = -1;
+            canvas.SetActive(false);
+            activeIdx = -1;
             return;
         }
 
-        // Activate the new canvas
-        canvases[index].SetActive(true);
-        PositionCanvas(canvases[index], index);
-        activeCanvasIndex = index;
+        // show the new one
+        canvas.SetActive(true);
+        PositionCanvas(canvas, idx);
+        activeIdx = idx;
     }
 }

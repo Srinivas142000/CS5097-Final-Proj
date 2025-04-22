@@ -1,26 +1,18 @@
 using UnityEngine;
 
-// Script not needed anymore so scrapping it
+// not using this anymore, can probably delete
+
 public class SwitchCanvas : MonoBehaviour
 {
-    public GameObject currentCanvas; // Assign current canvas in Inspector
-    public GameObject newCanvas;     // Assign the new canvas in Inspector
+    public GameObject currentCanvas, newCanvas;
 
-    // Call this method when button is clicked
-    public void SwitchToNewCanvas()
+    public void switchCanvas()
     {
-        if (currentCanvas != null)
-        {
-            currentCanvas.SetActive(false); // Disable current canvas
-        }
+        if (currentCanvas) currentCanvas.SetActive(false);
 
-        if (newCanvas != null)
-        {
-            newCanvas.SetActive(true); // Enable new canvas
-        }
+        if (newCanvas)
+            newCanvas.SetActive(true);
         else
-        {
-            Debug.LogWarning("New canvas is not assigned in the Inspector!");
-        }
+            Debug.LogWarning("newCanvas wasn't set – check the Inspector");
     }
 }

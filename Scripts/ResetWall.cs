@@ -1,56 +1,53 @@
 using UnityEngine;
 
+// resets wall to its original material, texture, and color
+
 public class ResetWall : MonoBehaviour
 {
-    public WallCreator wallCreator; // Reference to the WallCreator script
+    public WallCreator wallCreator;
 
     void Start()
     {
-        // Find the WallCreator script in the scene if not assigned
+        // auto-assign if missing
         if (wallCreator == null)
         {
             wallCreator = FindObjectOfType<WallCreator>();
             if (wallCreator == null)
             {
-                Debug.LogError("WallCreator script not found in the scene. Please assign one.");
+                Debug.LogError("No WallCreator found in scene – assign manually.");
             }
         }
     }
 
-    // Method to reset the wall to its default state
     public void ResetWallToDefault()
     {
-        if (wallCreator != null && wallCreator.createdWall != null)
+        if (wallCreator == null || wallCreator.createdWall == null)
         {
-            Renderer renderer = wallCreator.createdWall.GetComponent<Renderer>();
-            if (renderer != null)
-            {
-                // Reset material to default
-                if (wallCreator.defaultWallMaterial != null)
-                {
-                    renderer.material = wallCreator.defaultWallMaterial;
-                    Debug.Log($"Reset wall material to default: {wallCreator.defaultWallMaterial.name}");
-                }
-
-                // Reset texture (if applicable)
-                renderer.material.mainTexture = null;
-                Debug.Log("Reset wall texture to none.");
-
-                // Reset color (if applicable)
-                if (renderer.material.HasProperty("_Color"))
-                {
-                    renderer.material.color = Color.white; // Default color
-                    Debug.Log("Reset wall color to white.");
-                }
-            }
+            Debug.LogError("Missing reference – check wallCreator or wall object.");
+            return;
         }
-        else
+
+        var renderer = wallCreator.createdWall.GetComponent<Renderer>();
+        if (renderer == null) return;
+
+        // reset to default material if available
+        if (wallCreator.defaultWallMaterial != null)
         {
-            Debug.LogError("Wall or WallCreator is not properly assigned.");
+            renderer.material = wallCreator.defaultWallMaterial;
+            Debug.Log("Wall material reset to default.");
+        }
+
+        // clear texture
+        renderer.material.mainTexture = null;
+
+        // reset color
+        if (renderer.material.HasProperty("_Color"))
+        {
+            renderer.material.color = Color.white;
         }
     }
 
-    // Call this method when a button is clicked or an event triggers
+    // hook this up to a button if needed
     public void OnResetButtonClicked()
     {
         ResetWallToDefault();

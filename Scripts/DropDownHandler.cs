@@ -1,23 +1,21 @@
 using UnityEngine;
 using TMPro;
 
+// deleting script, dropdown doesnt work with ray controller
+
 public class DropdownHandler : MonoBehaviour
 {
-    public TMP_Dropdown optionDropdown; // Dropdown
-    public TMP_Text selectedOption; // Text for Dropdown
+    public TMP_Dropdown dropdown;
+    public TMP_Text label;
 
     void Start()
     {
-        // TO identify changes in dropdown
-        optionDropdown.onValueChanged.AddListener(OnDropdownValueChanged);
-
-        // Initialize with default value
-        selectedOption.text = "Selected: " + optionDropdown.options[optionDropdown.value].text;
+        dropdown.onValueChanged.AddListener(OnDropdownChanged);
+        label.text = $"Selected: {dropdown.options[dropdown.value].text}";
     }
 
-    // Method to update text when Dropdown value changes
-    void OnDropdownValueChanged(int value)
+    void OnDropdownChanged(int index)
     {
-        selectedOption.text = "Selected: " + optionDropdown.options[value].text;
+        label.text = $"Selected: {dropdown.options[index].text}";
     }
 }

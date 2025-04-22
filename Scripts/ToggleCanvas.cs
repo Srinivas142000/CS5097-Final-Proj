@@ -1,19 +1,19 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-// ToggleCanvas script to manage the visibility of two canvases in Unity.
 
+// toggleCanvas script to manage the visibility of two canvases in Unity.
+// this was written to toggle between two set canvases but used to toggle a single canvas 
 public class ToggleCanvas : MonoBehaviour
 {
-    public GameObject instructionsCanvas; // Assign in Inspector
-    public GameObject menuCanvas; // Assign in Inspector
+    public GameObject instructionsCanvas, menuCanvas;
 
     public void ToggleCanvases()
     {
         // Toggle the active state of both canvases
-        bool isInstructionsActive = instructionsCanvas.activeSelf;
+        bool isInstructionsVisible = instructionsCanvas.activeSelf;
 
-        instructionsCanvas.SetActive(!isInstructionsActive);
-        menuCanvas.SetActive(isInstructionsActive);
+        instructionsCanvas.SetActive(!isInstructionsVisible);
+        menuCanvas.SetActive(isInstructionsVisible);
     }
 }

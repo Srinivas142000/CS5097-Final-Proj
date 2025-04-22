@@ -2,14 +2,14 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 
-// / This script manages the loading and application of textures to walls in Unity
+//loads and assigns textures to wall objects
 
 public class TextureManager : MonoBehaviour
 {
-    public GameObject buttonPrefab;        // Button prefab with an Image component
-    public Transform buttonParent;         // UI Panel to hold the buttons
-    public WallCreator wallCreator;        // Reference to the WallCreator script
-    public string textureFolder = "WallMaterials"; // Folder in Resources
+    public GameObject buttonPrefab; // UI button prefab also has image component
+    public Transform buttonParent; // where to spawn the texture buttons
+    public WallCreator wallCreator; // needs reference to the script that builds walls
+    public string textureFolder = "WallMaterials"; // add material directly in this folder to make it spawn on thee UI of the App
 
     private List<Texture> loadedTextures = new List<Texture>();
 
@@ -19,50 +19,52 @@ public class TextureManager : MonoBehaviour
         GenerateTextureButtons();
     }
 
-    // Load textures from the Resources/Textures folder
+    // load all textures from Resources/<textureFolder>
     void LoadTextures()
     {
         Texture[] textures = Resources.LoadAll<Texture>(textureFolder);
         if (textures.Length == 0)
         {
-            Debug.LogWarning("No textures found in Resources/Textures folder.");
+            Debug.LogWarning("No textures found in the given Resources folder");
             return;
         }
 
         loadedTextures.AddRange(textures);
     }
 
-    // Generate buttons dynamically for each texture
+    // create one UI button for each texture we found
     void GenerateTextureButtons()
     {
         if (loadedTextures.Count == 0) return;
 
-        foreach (Texture texture in loadedTextures)
+        foreach (var tex in loadedTextures)
         {
-            GameObject buttonObj = Instantiate(buttonPrefab, buttonParent);
-            buttonObj.name = texture.name;
+            GameObject btn = Instantiate(buttonPrefab, buttonParent);
+            btn.name = tex.name;
 
-            // Set the button label
-            buttonObj.GetComponentInChildren<Text>().text = texture.name;
+            // label the button with texture name
+            var label = btn.GetComponentInChildren<Text>();
+            if (label != null)
+                label.text = tex.name;
 
-            // Set button image preview
-            Image buttonImage = buttonObj.GetComponent<Image>();
-            if (buttonImage != null)
+            // try to preview the texture in the button itself
+            var img = btn.GetComponent<Image>();
+            if (img != null && tex is Texture2D tex2D)
             {
-                buttonImage.sprite = Sprite.Create(
-                    (Texture2D)texture,
-                    new Rect(0, 0, texture.width, texture.height),
+                img.sprite = Sprite.Create(
+                    tex2D,
+                    new Rect(0, 0, tex2D.width, tex2D.height),
                     new Vector2(0.5f, 0.5f)
                 );
             }
 
-            // Add button click listener
-            Texture selectedTexture = texture;
-            buttonObj.GetComponent<Button>().onClick.AddListener(() => ApplyTextureToWall(selectedTexture));
+            // set up the button to apply that texture
+            Texture selectedTex = tex;
+            btn.GetComponent<Button>().onClick.AddListener(() => ApplyTextureToWall(selectedTex));
         }
     }
 
-    // Apply the selected texture to the wall
+    // tell the wallCreator to apply the texture
     void ApplyTextureToWall(Texture texture)
     {
         if (wallCreator != null)
@@ -71,7 +73,7 @@ public class TextureManager : MonoBehaviour
         }
         else
         {
-            Debug.LogError("WallCreator reference is missing in TextureManager.");
+            Debug.LogError("WallCreator ref is null - can't assign texture");
         }
     }
 }
